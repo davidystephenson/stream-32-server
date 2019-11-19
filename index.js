@@ -4,15 +4,16 @@ const express = require('express')
 const Sse = require('json-sse')
 
 const Room = require('./room/model')
+const User = require('./user/model')
 const roomFactory = require('./room/router')
 
 const app = express()
 
-const jsonParser = bodyParser.json()
-app.use(jsonParser)
-
 const corsMiddleware = cors()
 app.use(corsMiddleware)
+
+const jsonParser = bodyParser.json()
+app.use(jsonParser)
 
 const stream = new Sse()
 
@@ -35,7 +36,8 @@ const stream = new Sse()
 app.get(
   '/stream',
   async (request, response) => {
-    const rooms = await Room.findAll()
+    const rooms = await Room
+      .findAll({ include: [User] })
 
     const action = {
       type: 'ROOMS',
