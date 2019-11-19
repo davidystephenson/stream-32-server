@@ -3,6 +3,6 @@ const db = require('../db')
 
 const User = db.define('user', {
   name: Sequelize.STRING
-})
+}, { timestamps: false })
 
 module.exports = User

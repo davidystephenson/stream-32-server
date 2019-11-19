@@ -8,7 +8,7 @@ const databaseUrl = process
 const db = new Sequelize(databaseUrl)
 
 db
-  .sync({ force: false })
+  .sync({ force: true })
   .then(() => {
     console.log('Database synced')
   })

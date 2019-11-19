@@ -1,5 +1,6 @@
 const express = require('express')
 const Room = require('./model')
+const User = require('../user/model')
 
 const { Router } = express
 
@@ -24,6 +25,23 @@ function factory (stream) {
 
       // Just for testing
       response.send(room)
+    }
+  )
+
+  router.put(
+    '/join',
+    async (request, response, next) => {
+      const userId = 1
+
+      const user = await User
+        .findByPk(userId)
+
+      console.log('user test:', user)
+
+      // If you use the auth middleware, you only need this
+      // const { user } = request
+
+      response.send(user)
     }
   )
 
