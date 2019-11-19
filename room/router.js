@@ -29,7 +29,7 @@ function factory (stream) {
   )
 
   router.put(
-    '/join',
+    '/join/:name',
     async (request, response, next) => {
       const userId = 1
 
@@ -40,8 +40,22 @@ function factory (stream) {
 
       // If you use the auth middleware, you only need this
       // const { user } = request
+      //
 
-      response.send(user)
+      if (!user) {
+        return next('No user found')
+      }
+
+      const { name } = request.params
+
+      const room = await Room.findOne(
+        { where: { name } }
+      )
+
+      const updated = await user
+        .update({ roomId: room.id })
+
+      response.send(updated)
     }
   )
 
