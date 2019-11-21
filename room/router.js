@@ -73,31 +73,37 @@ function factory (stream) {
   )
 
   router.put(
-    '/points/:userId',
+    '/points',
     async (request, response, next) => {
-      const { userId } = request.params
+      const { username } = request.body
 
-      const user = await User
-        .findByPk(userId)
+      try {
+        const user = await User
+          .findOne({
+            where: { name: username }
+          })
 
-      const updated = await user.update(
-        { points: 1 }
-      )
+        const updated = await user.update(
+          { points: 1 }
+        )
 
-      const rooms = await Room
-        .findAll({ include: [User] })
+        const rooms = await Room
+          .findAll({ include: [User] })
 
-      const action = {
-        type: 'ROOMS',
-        payload: rooms
+        const action = {
+          type: 'ROOMS',
+          payload: rooms
+        }
+
+        const string = JSON
+          .stringify(action)
+
+        stream.send(string)
+
+        response.send(updated)
+      } catch (error) {
+        next(error)
       }
-
-      const string = JSON
-        .stringify(action)
-
-      stream.send(string)
-
-      response.send(updated)
     }
   )
 
